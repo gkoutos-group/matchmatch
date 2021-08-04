@@ -1,6 +1,7 @@
 
 library(MatchIt)
 library(stddiff)
+library(xlsx)
 
 .match_loaded <- function() {
   return(TRUE)
@@ -19,7 +20,6 @@ match_model <- function(df, subgroup_variable, matching_variables, distance='mah
     print(e)
     mod_match <- NULL
   })
-  
   
   return(as.data.frame(match.data(mod_match)))
 }
@@ -54,3 +54,14 @@ std_cat <- function(matched_data, subgroup_variable, matching_categoric) {
   return(stdc1)
 }
 
+std_diff_to_file <- function(matched_data, subgroup_variable, matching_categoric, matching_numeric, output_file) {
+  stdc <- std_cat(matched_data, subgroup_variable, matching_categoric)
+  stdn <- std_num(matched_data, subgroup_variable, matching_numeric)
+  
+  write.xlsx2(stdc, output_file, sheetName = "stddiff_cat",
+              col.names = TRUE, row.names = TRUE, append = FALSE)
+  
+  write.xlsx2(stdn, output_file, sheetName = "stddiff_num",
+              col.names = TRUE, row.names = TRUE, append = TRUE)
+  
+}
